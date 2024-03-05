@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kisiler_uygulamasi/data/entity/kisiler.dart';
+import 'package:kisiler_uygulamasi/ui/cubit/anasayfa_cubit.dart';
 import 'package:kisiler_uygulamasi/ui/views/detay_sayfa.dart';
 import 'package:kisiler_uygulamasi/ui/views/kayit_sayfa.dart';
 
@@ -11,30 +13,19 @@ class Anasayfa extends StatefulWidget {
 }
 
 class _AnasayfaState extends State<Anasayfa> {
+
+  @override
+  void initState() {
+
+    super.initState();
+    context.read<anasayfaCubit>().kisiYukle();
+
+  }
+
+@override
+
   bool aramaYapiliyormu = false;
   var searchController = TextEditingController();
-
-  Future<void> ara(String aramakelimesi) async {
-    print("$aramakelimesi");
-  }
-
-
-  Future<List<Kisiler>> kisiYukle() async {
-    var kisilerlistesi =<Kisiler>[];
-    var k1 = Kisiler(kisi_id: 1, kisi_ad: "Ahmet", kisi_tel: "111");
-    var k2 = Kisiler(kisi_id: 2, kisi_ad: "Berk", kisi_tel: "222");
-    var k3 = Kisiler(kisi_id: 3, kisi_ad: "Aslı", kisi_tel: "333");
-    var k4 = Kisiler(kisi_id: 4, kisi_ad: "Umut", kisi_tel: "444");
-    kisilerlistesi.add(k1);
-    kisilerlistesi.add(k2);
-    kisilerlistesi.add(k3);
-    kisilerlistesi.add(k4);
-    return(kisilerlistesi);
-  }
-
-  Future<void> sil(int kisiid) async {
-    print("$kisiid");
-  }
 
 
 
@@ -45,7 +36,7 @@ class _AnasayfaState extends State<Anasayfa> {
         title: aramaYapiliyormu
             ? TextField(
                 onChanged: (aramaSonucu) {
-                  ara(aramaSonucu);
+                  context.read<anasayfaCubit>().ara(aramaSonucu);
                 },
                 decoration: InputDecoration(hintText: "Ara"),
               )
@@ -57,6 +48,7 @@ class _AnasayfaState extends State<Anasayfa> {
                     setState(() {
                       aramaYapiliyormu = false;
                     });
+                    context.read<anasayfaCubit>().kisiYukle();
                   },
                   icon: Icon(Icons.clear),
                 )
@@ -71,18 +63,17 @@ class _AnasayfaState extends State<Anasayfa> {
         ],
       ),
       body: Center(
-        child: FutureBuilder<List<Kisiler>>(
-          future: kisiYukle(),
-          builder: (context, snapshot) {
-            if( snapshot.hasData)
+        child: BlocBuilder<anasayfaCubit,List<Kisiler>>(
+          builder: (context, kisilerListesi) {
+            if( kisilerListesi.isNotEmpty)
             {
-              var kisilerListesi = snapshot.data;
+
               return ListView.builder(itemBuilder: (context,index) {
                 var kisi = kisilerListesi[index];
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => Detay_sayfa(kisi: kisi),)).then((value) {
-                      print("Anasayfaya dönüldü");
+                      context.read<anasayfaCubit>().kisiYukle();
                     });
                   } ,
                   child: Card(
@@ -107,7 +98,8 @@ class _AnasayfaState extends State<Anasayfa> {
                               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(" ${kisi.kisi_ad } silinsin mi?"),action: SnackBarAction(
                                 label: "Evet",
                                 onPressed: () {
-                                  sil(kisi.kisi_id);
+                                  context.read<anasayfaCubit>().sil(kisi.kisi_id.toString());
+                                  context.read<anasayfaCubit>().kisiYukle();
                                 },
                               ),));
                             },
@@ -133,7 +125,7 @@ class _AnasayfaState extends State<Anasayfa> {
           Navigator.push(context,
                   MaterialPageRoute(builder: (context) => const Kayit_sayfa()))
               .then((value) {
-            print("Ana sayfaya dönüldü");
+            context.read<anasayfaCubit>().kisiYukle();
           });
         },
         child: Icon(Icons.add),
