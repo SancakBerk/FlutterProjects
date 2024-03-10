@@ -1,17 +1,20 @@
 // ignore_for_file: camel_case_types, must_be_immutable
 
+import 'package:ecommerce/ui/views/cartpage.dart';
+import 'package:ecommerce/ui/views/mainpage.dart';
+import 'package:ecommerce/ui/views/shoppage.dart';
+
 import '../../data/models/classes/product.dart';
 import '../../data/models/classes/user.dart';
 import './signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-
 class productDetails extends StatefulWidget {
   productClass product;
-  userClass? userdata;
+  userClass? user;
 
-  productDetails({required this.product, this.userdata});
+  productDetails({required this.product, this.user});
 
   @override
   State<productDetails> createState() => _productDetailsState();
@@ -51,7 +54,10 @@ class _productDetailsState extends State<productDetails> {
                     width: responsiveMedia * 0.8,
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
-                      child: Image.network(productt.image),
+                      child: Image.network(
+                        productt.image,
+                        height: 300,
+                      ),
                     ),
                   ),
                 ),
@@ -85,7 +91,9 @@ class _productDetailsState extends State<productDetails> {
                                     }
                                   });
                                 },
-                                icon: Icon(Icons.arrow_drop_down, size: 40)),
+                                icon: tapped
+                                    ? Icon(Icons.arrow_drop_up, size: 40)
+                                    : Icon(Icons.arrow_drop_down, size: 40)),
                           ]),
                       Container(
                           width: responsiveMedia * 0.5,
@@ -97,7 +105,7 @@ class _productDetailsState extends State<productDetails> {
                               ),
                               ElevatedButton(
                                   onPressed: () {
-                                    if (widget.userdata == null) {
+                                    if (widget.user == null) {
                                       print("Clicked and if null true");
                                       Navigator.push(
                                           context,
@@ -143,29 +151,56 @@ class _productDetailsState extends State<productDetails> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: activebaritem,
-        onTap: (value) {
-          setState(() {
-            activebaritem = value;
-          });
-        },
+        currentIndex: 1,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home,
-                color: activebaritem == 0 ? Colors.orange : Colors.black),
+            icon: IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            mainPage(user: widget.user ?? null)));
+              },
+              icon: Icon(Icons.home, color: Colors.black),
+            ),
             label: "Home",
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.shop,
-                  color: activebaritem == 1 ? Colors.orange : Colors.black),
+              icon: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              shopPage(user: widget.user ?? null)));
+                },
+                icon: Icon(Icons.shop, color: Colors.orange),
+              ),
               label: "Shop"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.access_time,
-                  color: activebaritem == 2 ? Colors.orange : Colors.black),
+              icon: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              cartPage(user: widget.user ?? null)));
+                },
+                icon: Icon(Icons.shopping_bag, color: Colors.black),
+              ),
               label: "Bag"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person,
-                  color: activebaritem == 3 ? Colors.orange : Colors.black),
+              icon: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              signIn(user: widget.user ?? null)));
+                },
+                icon: Icon(Icons.person, color: Colors.black),
+              ),
               label: "Profile")
         ],
         fixedColor: Colors.black,

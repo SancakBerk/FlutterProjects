@@ -13,11 +13,13 @@ dependencies:
   dio:
   flutter_animate:
   location_picker_flutter_map: ^3.0.1
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+  
 
 flutter:
   uses-material-design: true

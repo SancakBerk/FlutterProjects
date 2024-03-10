@@ -1,4 +1,6 @@
 // ignore_for_file: camel_case_types, must_be_immutable
+import 'package:ecommerce/ui/views/signin.dart';
+
 import '../cubits/mainpagecubit.dart';
 import '../../data/models/classes/product.dart';
 import '../../data/models/classes/user.dart';
@@ -6,7 +8,6 @@ import '../../data/models/renkler/renk.dart';
 
 import './cartpage.dart';
 import './productdetail.dart';
-import './profilepage.dart';
 import './shoppage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -22,7 +23,6 @@ class mainPage extends StatefulWidget {
 }
 
 class _mainPageState extends State<mainPage> {
-  var activebaritem = 0;
   ScrollController scrollHandle = ScrollController();
 
   @override
@@ -35,22 +35,18 @@ class _mainPageState extends State<mainPage> {
   Widget build(BuildContext context) {
     var responsiveWidth = MediaQuery.sizeOf(context).width;
     if (widget.user != null) {
-      print(widget.user);
+      print("WİDGET USER NULL DEĞİL ${widget.user!.name.firstname}");
     }
 
     return Scaffold(
-      /*appBar: widget.user != null
+      appBar: widget.user != null
           ? AppBar(
-              title: ElevatedButton(
-              onPressed: () {
-                print(widget.user!.name.firstname);
-              },
-              child: Text(
-                "${widget.user!.name.firstname}",
+              title: Text(
+                "Welcome ${widget.user!.name.firstname}...",
                 style: TextStyle(color: Colors.black),
               ),
-            ))
-          : null,*/
+            )
+          : null,
       backgroundColor: mainPageBackgroundColor,
       body: SingleChildScrollView(
         controller: scrollHandle,
@@ -81,7 +77,13 @@ class _mainPageState extends State<mainPage> {
                                 fontSize: 50),
                           )).animate().fadeIn(duration: 1000.ms).slideX(),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => shopPage(),
+                              ));
+                        },
                         child: Text(
                           "Check",
                           style: TextStyle(color: Colors.white),
@@ -140,7 +142,13 @@ class _mainPageState extends State<mainPage> {
                                 alignment: Alignment.centerRight,
                                 child: GestureDetector(
                                   onTap: () {
-                                    print("View All clicked");
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => shopPage(
+                                            user: widget.user ?? null,
+                                          ),
+                                        ));
                                   },
                                   child: const Text(
                                     "View all",
@@ -171,7 +179,9 @@ class _mainPageState extends State<mainPage> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => productDetails(
-                                            product: state[index]),
+                                          product: state[index],
+                                          user: widget.user ?? null,
+                                        ),
                                       )).then((value) {
                                     scrollHandle.animateTo(0,
                                         duration: Duration(milliseconds: 1000),
@@ -222,64 +232,54 @@ class _mainPageState extends State<mainPage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: activebaritem,
-        onTap: (value) {
-          setState(() {
-            activebaritem = value;
-          });
-        },
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: IconButton(
               onPressed: () {
-                setState(() {
-                  activebaritem = 0;
-                });
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => mainPage()));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            mainPage(user: widget.user ?? null)));
               },
-              icon: Icon(Icons.home,
-                  color: activebaritem == 0 ? Colors.orange : Colors.black),
+              icon: Icon(Icons.home, color: Colors.orange),
             ),
             label: "Home",
           ),
           BottomNavigationBarItem(
               icon: IconButton(
                 onPressed: () {
-                  setState(() {
-                    activebaritem = 1;
-                  });
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => shopPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              shopPage(user: widget.user ?? null)));
                 },
-                icon: Icon(Icons.shop,
-                    color: activebaritem == 1 ? Colors.orange : Colors.black),
+                icon: Icon(Icons.shop, color: Colors.black),
               ),
               label: "Shop"),
           BottomNavigationBarItem(
               icon: IconButton(
                 onPressed: () {
-                  setState(() {
-                    activebaritem = 2;
-                  });
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => cartPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              cartPage(user: widget.user ?? null)));
                 },
-                icon: Icon(Icons.access_time,
-                    color: activebaritem == 2 ? Colors.orange : Colors.black),
+                icon: Icon(Icons.shopping_bag, color: Colors.black),
               ),
               label: "Bag"),
           BottomNavigationBarItem(
               icon: IconButton(
                 onPressed: () {
-                  setState(() {
-                    activebaritem = 3;
-                  });
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => profilePage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              signIn(user: widget.user ?? null)));
                 },
-                icon: Icon(Icons.person,
-                    color: activebaritem == 3 ? Colors.orange : Colors.black),
+                icon: Icon(Icons.person, color: Colors.black),
               ),
               label: "Profile")
         ],

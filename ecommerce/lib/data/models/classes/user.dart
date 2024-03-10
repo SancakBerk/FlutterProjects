@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
-
 class userClass {
   int id;
   String email;
@@ -19,11 +16,9 @@ class userClass {
       required this.address,
       required this.phone});
 
-  factory userClass.fromJson(Map<String, dynamic> jsonveri) {
-    print("JSON VERİ $jsonveri");
-
+  factory userClass.fromJson(Map<String, dynamic> jsonveri, int id) {
     return userClass(
-        id: 1,
+        id: id,
         address: addressClass.fromJson(jsonveri["address"]),
         email: jsonveri["email"],
         username: jsonveri["username"],
@@ -48,7 +43,7 @@ class addressClass {
   geoLocaitonClass geolocation;
   String city;
   String street;
-  String number;
+  int number;
   String zipcode;
   addressClass(
       {required this.geolocation,

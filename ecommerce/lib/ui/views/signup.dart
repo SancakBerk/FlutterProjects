@@ -1,8 +1,10 @@
 // ignore_for_file: camel_case_types, prefer_typing_uninitialized_variables, prefer_const_constructors, avoid_unnecessary_containers
 
 import 'package:ecommerce/data/models/classes/user.dart';
+import 'package:ecommerce/data/models/renkler/renk.dart';
 import 'package:ecommerce/ui/cubits/signupcubit.dart';
 import 'package:ecommerce/ui/views/mainpage.dart';
+import 'package:ecommerce/ui/views/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_picker_flutter_map/location_picker_flutter_map.dart';
@@ -42,13 +44,12 @@ class _signUpState extends State<signUp> {
       body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Container(
-            decoration: const BoxDecoration(color: Color(0xFFF9F9F9)),
+            decoration: const BoxDecoration(),
             child: Form(
               child: Column(
                 children: [
                   Container(
                     height: 100,
-                    alignment: Alignment.centerLeft,
                     child: const Text(
                       "Sign up",
                       style:
@@ -155,22 +156,32 @@ class _signUpState extends State<signUp> {
                             ],
                           ),
                         ),
-                        const Padding(
-                          padding: EdgeInsets.only(top: 8),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                "Already Have an acoount?",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 15),
-                              ),
-                              Icon(Icons.arrow_right),
-                            ],
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => signIn(),
+                                ));
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 8),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  "Already Have an acoount?",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      color: mainPageTextLightGrey),
+                                ),
+                                Icon(Icons.arrow_right),
+                              ],
+                            ),
                           ),
-                        ),
-                        Padding(
+                        ) /*Padding(
                           padding: const EdgeInsets.all(15.0),
                           child: SizedBox(
                               width: 400,
@@ -193,13 +204,9 @@ class _signUpState extends State<signUp> {
                                   minZoomLevel: 5,
                                   maxZoomLevel: 16,
                                   trackMyPosition: true,
-                                  onError: (e) => print(e),
+                                  onError: (e) =>
+                                      print("ERRORRRRR HATTAAAA $e"),
                                   onPicked: (pickedData) {
-                                    print(
-                                      "name:${tfName.text} surname: ${tfSurname.text} username: ${tfUsername.text} tfphone: ${tfPhone.text} password: ${tfPassword.text} mail: ${tfMailcontroller.text} pickeddata: $pickedData ",
-                                    );
-                                    print(pickedData.latLong.latitude);
-                                    print(pickedData.address);
                                     latitude = pickedData.latLong.latitude;
                                     longitude = pickedData.latLong.longitude;
                                     city = pickedData.addressData["city"];
@@ -208,21 +215,35 @@ class _signUpState extends State<signUp> {
                                         pickedData.addressData["postscode"];
                                     number =
                                         pickedData.addressData["house_number"];
-
-                                    print(pickedData.addressData['country']);
-                                    print(
-                                        "ADress data ${pickedData.addressData}");
                                   },
-                                  onChanged: (pickedData) {
-                                    print(pickedData.latLong.latitude);
-                                    print(pickedData.latLong.longitude);
-                                    print(pickedData.address);
-                                    print(pickedData.addressData);
-                                  })),
-                        ),
+                                  onChanged: (pickedData) {})),
+                        ),*/
+                        ,
                         ElevatedButton(
-                            onPressed: () async {
-                              if (tfName.text.isNotEmpty &&
+                          onPressed: () async {
+                            userClass newuser = await context
+                                .read<signUpCubit>()
+                                .addUserandreturn(
+                                    tfName.text,
+                                    tfSurname.text,
+                                    tfUsername.text,
+                                    tfPhone.text,
+                                    tfPassword.text,
+                                    tfMailcontroller.text,
+                                    "latitude",
+                                    "longitude",
+                                    "city",
+                                    "street",
+                                    "postcode",
+                                    "5");
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => mainPage(
+                                    user: newuser,
+                                  ),
+                                ));
+                            /*if (tfName.text.isNotEmpty &&
                                   tfSurname.text.isNotEmpty &&
                                   tfUsername.text.isNotEmpty &&
                                   tfPhone.text.isNotEmpty &&
@@ -231,18 +252,25 @@ class _signUpState extends State<signUp> {
                                 userClass newuser = await context
                                     .read<signUpCubit>()
                                     .addUserandreturn(
-                                        tfName,
-                                        tfSurname,
-                                        tfUsername,
-                                        tfPhone,
-                                        tfPassword,
-                                        tfMailcontroller,
+                                        tfName.text,
+                                        tfSurname.text,
+                                        tfUsername.text,
+                                        tfPhone.text,
+                                        tfPassword.text,
+                                        tfMailcontroller.text,
                                         latitude,
                                         longitude,
                                         city,
                                         street,
                                         postcode,
                                         number);
+                                print("NEwuserinfo");
+                                print("tf.phone${tfPhone.text}");
+                                print(newuser.name.firstname);
+                                print(newuser.name.lastname);
+                                print(newuser.id);
+                                print(
+                                    "$latitude $longitude $city$street $postcode$number");
 
                                 Navigator.push(
                                     context,
@@ -305,9 +333,15 @@ class _signUpState extends State<signUp> {
                                     isMailEmpty = false;
                                   });
                                 }
-                              }
-                            },
-                            child: const Text("Sign Up")),
+                              }*/
+                          },
+                          child: const Text(
+                            "Sign Up",
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red),
+                        ),
                       ],
                     ),
                   ),

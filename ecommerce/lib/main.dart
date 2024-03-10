@@ -1,3 +1,7 @@
+import 'package:ecommerce/ui/cubits/cartpagecubit.dart';
+import 'package:ecommerce/ui/cubits/shoppagecubit.dart';
+import 'package:ecommerce/ui/cubits/signincubit.dart';
+
 import './ui/cubits/signupcubit.dart';
 import './ui/views/mainpage.dart';
 import './ui/cubits/mainpagecubit.dart';
@@ -18,6 +22,15 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => signUpCubit()),
         BlocProvider(create: (context) => mainPageCubit()),
+        BlocProvider(
+          create: (context) => shopPageCubit(),
+        ),
+        BlocProvider(
+          create: (context) => signinCubit(),
+        ),
+        BlocProvider(
+          create: (context) => cartpageCubit(),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
