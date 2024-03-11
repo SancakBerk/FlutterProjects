@@ -34,9 +34,7 @@ class _mainPageState extends State<mainPage> {
   @override
   Widget build(BuildContext context) {
     var responsiveWidth = MediaQuery.sizeOf(context).width;
-    if (widget.user != null) {
-      print("WİDGET USER NULL DEĞİL ${widget.user!.name.firstname}");
-    }
+    if (widget.user != null) {}
 
     return Scaffold(
       appBar: widget.user != null
@@ -224,7 +222,9 @@ class _mainPageState extends State<mainPage> {
                     ],
                   );
                 } else {
-                  return CircularProgressIndicator();
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
               }),
             )

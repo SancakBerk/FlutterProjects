@@ -61,7 +61,8 @@ class eCommerceRepo {
       });
       var myresponsedata = responseuser.data;
       String idValue = myresponsedata["id"].toString();
-      return getUserById(idValue);
+      print(idValue);
+      return getUserById("1");
     } catch (e) {
       print("Fİrst catch");
       print(e);
@@ -125,11 +126,13 @@ class eCommerceRepo {
   Future<userClass> getUserById(String id) async {
     try {
       var user = await Dio().get("https://fakestoreapi.com/users/$id");
+      print(user.data);
       Map<String, dynamic> jsondata = Map<String, dynamic>.from(user.data);
       var deneme = decodUserJson(jsondata, int.parse(id));
       return deneme;
     } catch (e) {
       print("Second catch");
+      print(e);
       return userClass(
           id: 0,
           email: "",

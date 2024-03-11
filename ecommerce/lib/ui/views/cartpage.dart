@@ -40,80 +40,73 @@ class _cartPageState extends State<cartPage> {
         centerTitle: true,
       ),
       body: widget.user != null
-          ? SingleChildScrollView(
-              child: Container(
-                height: responsiveHeight,
-                width: responsiveWidth,
-                child: Column(
-                  children: [
-                    BlocBuilder<cartpageCubit, List<productClass>>(
-                      builder: (context, state) {
-                        if (state.isNotEmpty && state.isNotEmpty) {
-                          return Padding(
-                              padding: EdgeInsets.only(top: 10, bottom: 10),
-                              child: Container(
-                                height: 550,
-                                child: ListView.builder(
-                                  itemCount: state.length,
-                                  itemBuilder: (context, index) {
-                                    var product = state[index];
-                                    return Padding(
-                                      padding: EdgeInsets.symmetric(),
-                                      child: Container(
-                                          height: 300,
-                                          child: Row(
-                                            children: [
-                                              Image.network(
-                                                product.image,
-                                                height: 250,
-                                                width: 200,
-                                                fit: BoxFit.contain,
-                                              ),
-                                              SizedBox(
-                                                  width: 120,
-                                                  height: 250,
-                                                  child: Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            horizontal: 0,
-                                                            vertical: 30),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          product.category,
-                                                          style: TextStyle(
-                                                              color:
-                                                                  mainPageTextLightGrey),
-                                                        ),
-                                                        Text(
-                                                          product.title,
-                                                          style: TextStyle(
-                                                              fontSize: 16,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        Text(
-                                                            "${product.price.toString()} \$"),
-                                                      ],
+          ? Column(
+              children: [
+                Expanded(
+                  child: BlocBuilder<cartpageCubit, List<productClass>>(
+                    builder: (context, state) {
+                      if (state.isNotEmpty && state.isNotEmpty) {
+                        return Padding(
+                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                            child: ListView.builder(
+                              itemCount: state.length,
+                              itemBuilder: (context, index) {
+                                var product = state[index];
+                                return Padding(
+                                  padding: EdgeInsets.symmetric(),
+                                  child: Container(
+                                      height: 300,
+                                      child: Row(
+                                        children: [
+                                          Image.network(
+                                            product.image,
+                                            height: 250,
+                                            width: 200,
+                                            fit: BoxFit.contain,
+                                          ),
+                                          SizedBox(
+                                              width: 120,
+                                              height: 250,
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 0,
+                                                    vertical: 30),
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      product.category,
+                                                      style: TextStyle(
+                                                          color:
+                                                              mainPageTextLightGrey),
                                                     ),
-                                                  )),
+                                                    Text(
+                                                      product.title,
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Text(
+                                                        "${product.price.toString()} \$"),
+                                                  ],
+                                                ),
+                                              )),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              IconButton(
+                                                  onPressed: () {},
+                                                  icon: Icon(Icons.clear)),
                                               Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
                                                 children: [
-                                                  IconButton(
-                                                      onPressed: () {},
-                                                      icon: Icon(Icons.clear)),
                                                   Row(
                                                     children: [
                                                       Text(product.rating.rate
@@ -129,21 +122,23 @@ class _cartPageState extends State<cartPage> {
                                                             mainPageTextLightGrey),
                                                   )
                                                 ],
-                                              ),
+                                              )
                                             ],
-                                          )),
-                                    );
-                                  },
-                                ),
-                              ));
-                        } else {
-                          return CircularProgressIndicator();
-                        }
-                      },
-                    )
-                  ],
-                ),
-              ),
+                                          ),
+                                        ],
+                                      )),
+                                );
+                              },
+                            ));
+                      } else {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
+                )
+              ],
             )
           : Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

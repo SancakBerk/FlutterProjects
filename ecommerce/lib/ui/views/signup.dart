@@ -7,7 +7,6 @@ import 'package:ecommerce/ui/views/mainpage.dart';
 import 'package:ecommerce/ui/views/signin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:location_picker_flutter_map/location_picker_flutter_map.dart';
 
 class signUp extends StatefulWidget {
   const signUp({super.key});

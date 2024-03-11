@@ -33,7 +33,8 @@ class _shopPageState extends State<shopPage> {
   var activebaritem = 1;
   @override
   Widget build(BuildContext context) {
-    var responsiveController = MediaQuery.sizeOf(context).width;
+    var responsiveWidController = MediaQuery.sizeOf(context).width;
+    var responsiveHeightController = MediaQuery.sizeOf(context).height;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -52,158 +53,161 @@ class _shopPageState extends State<shopPage> {
       ),
       body: Padding(
         padding: EdgeInsets.only(top: 20),
-        child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Container(
-              width: responsiveController,
-              child: Column(
-                children: [
-                  Container(
-                    width: responsiveController,
-                    child: Column(
-                      children: [
-                        SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8),
-                              child: Row(
-                                children: [
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.black),
-                                    onPressed: () {
-                                      setState(() {
-                                        context
-                                            .read<shopPageCubit>()
-                                            .getProducts();
-                                      });
-                                    },
-                                    child: Text(
-                                      "All",
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w600),
+        child: Column(
+          children: [
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: Row(
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black),
+                      onPressed: () {
+                        setState(() {
+                          context.read<shopPageCubit>().getProducts();
+                        });
+                      },
+                      child: Text(
+                        "All",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    FutureBuilder(
+                      future: context.read<shopPageCubit>().getcategories(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          var categoryList = snapshot.data!.map((categorie) {
+                            return Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.black),
+                                  onPressed: () {
+                                    setState(() {
+                                      context
+                                          .read<shopPageCubit>()
+                                          .getProductsByCategory(categorie);
+                                    });
+                                  },
+                                  child: Text(
+                                    categorie,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ));
+                          }).toList();
+
+                          return Row(
+                            children: categoryList,
+                          );
+                        } else {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: BlocBuilder<shopPageCubit, List<productClass>>(
+                builder: (context, listProductclass) {
+                  return GridView.builder(
+                    itemCount: listProductclass.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      childAspectRatio: 1 / 2,
+                      crossAxisCount: 2,
+                    ),
+                    itemBuilder: (context, index) {
+                      var product = listProductclass[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => productDetails(
+                                        product: product,
+                                        user: widget.user ?? null,
+                                      )));
+                        },
+                        child: Container(
+                            height: 350,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1, color: mainPageTextLightGrey)),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Image.network(
+                                  height: 200,
+                                  product.image,
+                                  fit: BoxFit.contain,
+                                ),
+                                Text(
+                                  product.category,
+                                  style:
+                                      TextStyle(color: mainPageTextLightGrey),
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(
+                                  height: 60,
+                                  child: Text(
+                                    product.title,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w600),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Text(
+                                  "${product.price.toString()}\$",
+                                  textAlign: TextAlign.start,
+                                  style: TextStyle(fontSize: 17),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 5),
+                                  child: Container(
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "${product.rating.rate}",
+                                              style: TextStyle(fontSize: 17),
+                                            ),
+                                            Icon(
+                                              Icons.star,
+                                              color: Color.fromARGB(
+                                                  255, 176, 165, 62),
+                                            )
+                                          ],
+                                        ),
+                                        Text(
+                                          "(${product.rating.count.toString()})",
+                                          style: TextStyle(
+                                              color: mainPageTextLightGrey),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                  FutureBuilder(
-                                    future: context
-                                        .read<shopPageCubit>()
-                                        .getcategories(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        var categoryList =
-                                            snapshot.data!.map((categorie) {
-                                          return Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 5),
-                                              child: ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        Colors.black),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    context
-                                                        .read<shopPageCubit>()
-                                                        .getProductsByCategory(
-                                                            categorie);
-                                                  });
-                                                },
-                                                child: Text(
-                                                  categorie,
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
-                                              ));
-                                        }).toList();
-
-                                        return Row(
-                                          children: categoryList,
-                                        );
-                                      } else {
-                                        return CircularProgressIndicator();
-                                      }
-                                    },
-                                  )
-                                ],
-                              ),
+                                )
+                              ],
                             )),
-                        Padding(
-                          padding: EdgeInsets.only(top: 20, bottom: 40),
-                          child: SizedBox(
-                            height: 450,
-                            child:
-                                BlocBuilder<shopPageCubit, List<productClass>>(
-                              builder: (context, listProductclass) {
-                                return GridView.builder(
-                                  itemCount: listProductclass.length,
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    childAspectRatio: 1 / 1.8,
-                                    crossAxisCount: 2,
-                                  ),
-                                  itemBuilder: (context, index) {
-                                    var product = listProductclass[index];
-                                    return GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    productDetails(
-                                                      product: product,
-                                                      user: widget.user ?? null,
-                                                    )));
-                                      },
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  width: 1,
-                                                  color:
-                                                      mainPageTextLightGrey)),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Image.network(
-                                                height: 200,
-                                                product.image,
-                                                fit: BoxFit.contain,
-                                              ),
-                                              Text(
-                                                product.category,
-                                                style: TextStyle(
-                                                    color:
-                                                        mainPageTextLightGrey),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              Text(
-                                                product.title,
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                                textAlign: TextAlign.center,
-                                              ),
-                                              Text(
-                                                "${product.price.toString()}\$",
-                                                textAlign: TextAlign.start,
-                                              ),
-                                            ],
-                                          )),
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
+                      );
+                    },
+                  );
+                },
               ),
-            )),
+            )
+          ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: activebaritem,
